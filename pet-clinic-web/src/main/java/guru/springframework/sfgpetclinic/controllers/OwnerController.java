@@ -3,7 +3,9 @@ package guru.springframework.sfgpetclinic.controllers;
 import guru.springframework.sfgpetclinic.services.OwnerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +17,12 @@ public class OwnerController {
 
     public OwnerController(OwnerService ownerService) {
         this.ownerService = ownerService;
+    }
+
+    // Allows control over data being bound to a Java object
+    @InitBinder
+    public void setAllowedFields(WebDataBinder dataBinder) {
+        dataBinder.setDisallowedFields("id"); // don't allow web form to send an id to be bound to object
     }
 
     @GetMapping({"", "/index", "/index.html"})
