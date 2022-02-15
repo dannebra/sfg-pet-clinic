@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class VisitControllerTest {
+    private static final String VISIT_URL = "/owners/1/pets/2/visits/new";
 
     @Mock
     VisitService visitService;
@@ -44,7 +45,7 @@ class VisitControllerTest {
 
     @Test
     void initNewVisitForm() throws Exception {
-        mockMvc.perform(get("/owners/1/pets/1/visits/new"))
+        mockMvc.perform(get(VISIT_URL))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("visit"))
                 .andExpect(model().attributeExists("pet"))
@@ -53,11 +54,21 @@ class VisitControllerTest {
 
     @Test
     void addNewvisit() throws Exception {
-        mockMvc.perform(post("/owners/1/pets/2/visits/new"))
+        mockMvc.perform(post(VISIT_URL))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().attributeExists("visit"))
                 .andExpect(view().name("redirect:/owners/1"));
 
         verify(visitService).save(any());
+    }
+
+    @Test
+    void addNewvisitWithDate() throws Exception {
+        mockMvc.perform(post(VISIT_URL)
+                .param("date", "2022-02-15")
+                .param("description", "test with date!"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().attributeExists("visit"))
+                .andExpect(view().name("redirect:/owners/1"));
     }
 }
